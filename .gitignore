@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Claude Code — local session data (regenerated per machine)
+.claude/last-session.txt
+.claude/last-session-transcript.txt
+.claude/last-session-processed.txt
+.claude/scheduled_tasks.json
+.claude/settings.local.json
+
+# OS junk
+Thumbs.db
+.DS_Store
+*.tmp
+~$*
+
+# Generated context packs (single-use artifacts)
+**/上下文包-第*.md
+**/一致性报告-*.md
+
+# IDE
+.vscode/
+.idea/

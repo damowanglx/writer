@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #0a0a0a;
+  }
+
+  .cover {
+    width: 600px;
+    height: 800px;
+    background: #0d0d0d;
+    position: relative;
+    overflow: hidden;
+    font-family: "SimSun", "Noto Serif SC", serif;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  }
+
+  /* 背景纹理 — 卷尺刻度 */
+  .ruler-bg {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 38px,
+        rgba(255,255,255,0.03) 38px,
+        rgba(255,255,255,0.03) 40px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 98px,
+        rgba(255,255,255,0.02) 98px,
+        rgba(255,255,255,0.02) 100px
+      );
+    z-index: 1;
+  }
+
+  /* 暗红色渐变 — 门槛渗出的红泥 */
+  .red-bleed {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 45%;
+    background: linear-gradient(to top,
+      rgba(120, 20, 20, 0.5) 0%,
+      rgba(80, 10, 10, 0.25) 30%,
+      rgba(40, 5, 5, 0.08) 60%,
+      transparent 100%
+    );
+    z-index: 2;
+  }
+
+  /* 镜面裂纹 */
+  .mirror-crack {
+    position: absolute;
+    top: 15%; left: 25%; right: 25%; bottom: 25%;
+    z-index: 3;
+    opacity: 0.12;
+    background:
+      linear-gradient(25deg, transparent 48%, rgba(255,255,255,0.4) 49%, rgba(255,255,255,0.4) 51%, transparent 52%),
+      linear-gradient(-35deg, transparent 45%, rgba(255,255,255,0.3) 46%, rgba(255,255,255,0.3) 48%, transparent 49%),
+      linear-gradient(70deg, transparent 55%, rgba(255,255,255,0.25) 56%, rgba(255,255,255,0.25) 57%, transparent 58%);
+  }
+
+  /* 门框线 — 1.2米宽 */
+  .door-frame {
+    position: absolute;
+    top: 18%; left: 50%; bottom: 22%;
+    width: 1px;
+    background: rgba(255,255,255,0.06);
+    transform: translateX(-60px);
+    z-index: 2;
+  }
+  .door-frame.right {
+    transform: translateX(60px);
+  }
+  .door-measure {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255,255,255,0.08);
+    font-size: 13px;
+    letter-spacing: 4px;
+    z-index: 2;
+  }
+
+  /* 主标题 */
+  .title {
+    position: absolute;
+    top: 32%;
+    left: 0; right: 0;
+    text-align: center;
+    z-index: 10;
+  }
+  .title-main {
+    font-size: 52px;
+    font-weight: bold;
+    color: #e8e0d0;
+    letter-spacing: 10px;
+    text-shadow: 0 0 40px rgba(200,160,100,0.3), 0 2px 4px rgba(0,0,0,0.8);
+    display: block;
+  }
+  .title-sub {
+    display: block;
+    margin-top: 6px;
+    font-size: 14px;
+    color: rgba(200,160,120,0.5);
+    letter-spacing: 16px;
+    font-family: "SimHei", "Noto Sans SC", sans-serif;
+  }
+
+  /* 分割线 */
+  .divider {
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(180,140,90,0.4), transparent);
+    z-index: 10;
+  }
+
+  /* 卷尺刻度装饰 */
+  .ruler-mark {
+    position: absolute;
+    top: 49.5%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    gap: 6px;
+  }
+  .ruler-mark span {
+    display: block;
+    width: 2px;
+    background: rgba(180,140,90,0.3);
+  }
+  .ruler-mark span.tall { height: 16px; }
+  .ruler-mark span.mid { height: 10px; }
+  .ruler-mark span.short { height: 5px; }
+
+  /* 底部文字 */
+  .tagline {
+    position: absolute;
+    bottom: 20%;
+    left: 0; right: 0;
+    text-align: center;
+    z-index: 10;
+    color: rgba(200,180,150,0.45);
+    font-size: 13px;
+    letter-spacing: 6px;
+    line-height: 2;
+  }
+
+  /* 作者 */
+  .author {
+    position: absolute;
+    bottom: 10%;
+    left: 0; right: 0;
+    text-align: center;
+    z-index: 10;
+    color: rgba(200,180,150,0.35);
+    font-size: 12px;
+    letter-spacing: 8px;
+  }
+
+  /* 镜面反光点 */
+  .glint {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    z-index: 4;
+  }
+  .glint:nth-child(1) { top: 28%; left: 38%; }
+  .glint:nth-child(2) { top: 35%; left: 62%; opacity: 0.5; }
+  .glint:nth-child(3) { top: 55%; left: 42%; opacity: 0.4; }
+
+  /* 微粒 */
+  .particles {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 3;
+    opacity: 0.15;
+  }
+</style>
+</head>
+<body>
+<div class="cover">
+  <div class="ruler-bg"></div>
+  <div class="red-bleed"></div>
+  <div class="mirror-crack"></div>
+  <div class="door-frame"></div>
+  <div class="door-frame right"></div>
+  <div class="door-measure">1 . 2 m</div>
+  <div class="glint" style="top:28%;left:38%"></div>
+  <div class="glint" style="top:35%;left:62%"></div>
+  <div class="glint" style="top:55%;left:42%"></div>
+
+  <div class="title">
+    <span class="title-main">凶宅测量员</span>
+    <span class="title-sub">每一扇门都是1.2米宽</span>
+  </div>
+
+  <div class="divider"></div>
+  <div class="ruler-mark">
+    <span class="tall"></span><span class="mid"></span><span class="short"></span>
+    <span class="tall"></span><span class="mid"></span><span class="short"></span>
+    <span class="tall"></span><span class="mid"></span><span class="short"></span>
+  </div>
+
+  <div class="tagline">
+    量清楚每一扇门。<br>
+    念完每一个名字。
+  </div>
+
+  <div class="author">
+    [ damowang ]
+  </div>
+</div>
+</body>
+</html>

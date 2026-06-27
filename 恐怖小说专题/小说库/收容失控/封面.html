@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #060606;
+  }
+
+  .cover {
+    width: 600px;
+    height: 800px;
+    background: linear-gradient(175deg, #0a0d12 0%, #0d1118 40%, #11161f 100%);
+    position: relative;
+    overflow: hidden;
+    font-family: "SimSun", "Noto Serif SC", serif;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+  }
+
+  /* 深夜城市底光 */
+  .city-glow {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 35%;
+    background: linear-gradient(to top,
+      rgba(30, 40, 55, 0.6) 0%,
+      rgba(20, 30, 45, 0.3) 40%,
+      rgba(15, 20, 30, 0.1) 70%,
+      transparent 100%
+    );
+    z-index: 2;
+  }
+
+  /* 路灯光晕 */
+  .streetlight {
+    position: absolute;
+    top: 38%; left: 48%;
+    width: 300px; height: 300px;
+    background: radial-gradient(ellipse at center,
+      rgba(255, 200, 100, 0.08) 0%,
+      rgba(255, 180, 80, 0.04) 30%,
+      rgba(255, 150, 50, 0.01) 60%,
+      transparent 100%
+    );
+    transform: translate(-50%, -50%);
+    z-index: 3;
+  }
+
+  /* 暖黄光点 - 电话亭 */
+  .warm-light {
+    position: absolute;
+    top: 55%; left: 42%;
+    width: 8px; height: 8px;
+    background: rgba(255, 180, 100, 0.5);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(255, 170, 80, 0.3), 0 0 60px rgba(255, 150, 60, 0.1);
+    z-index: 4;
+  }
+
+  /* 规则裂隙 - 玻璃裂纹系统 */
+  .crack-system {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 5;
+    opacity: 0.25;
+  }
+
+  /* 主裂纹 - 从中心放射 */
+  .crack-main {
+    position: absolute;
+    top: 38%; left: 48%;
+    width: 2px;
+    height: 200px;
+    background: linear-gradient(to bottom,
+      rgba(200, 220, 255, 0.6),
+      rgba(180, 200, 240, 0.4),
+      rgba(150, 180, 220, 0.15),
+      transparent
+    );
+    transform: translate(-50%, -50%) rotate(-15deg);
+    box-shadow: 0 0 8px rgba(180, 210, 255, 0.3);
+  }
+  .crack-main::after {
+    content: '';
+    position: absolute;
+    top: 60px; left: -30px;
+    width: 1px; height: 80px;
+    background: linear-gradient(to bottom,
+      rgba(200, 220, 255, 0.5),
+      transparent
+    );
+    transform: rotate(25deg);
+  }
+
+  /* 次级裂纹 */
+  .crack-secondary {
+    position: absolute;
+    top: 30%; left: 45%;
+    width: 1px; height: 140px;
+    background: linear-gradient(to bottom,
+      transparent,
+      rgba(180, 210, 255, 0.35),
+      rgba(160, 190, 230, 0.15),
+      transparent
+    );
+    transform: rotate(35deg);
+  }
+
+  /* 细小裂纹 */
+  .crack-fine {
+    position: absolute;
+    background: rgba(180, 210, 240, 0.2);
+  }
+  .crack-fine:nth-child(1) { top: 42%; left: 36%; width: 80px; height: 1px; transform: rotate(-40deg); }
+  .crack-fine:nth-child(2) { top: 45%; left: 55%; width: 60px; height: 1px; transform: rotate(50deg); }
+  .crack-fine:nth-child(3) { top: 34%; left: 50%; width: 50px; height: 1px; transform: rotate(-20deg); }
+
+  /* 裂纹交叉点闪光 */
+  .crack-node {
+    position: absolute;
+    top: 40%; left: 47%;
+    width: 3px; height: 3px;
+    background: rgba(200, 220, 255, 0.5);
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(180, 210, 255, 0.4);
+    z-index: 6;
+  }
+
+  /* 手机屏幕轮廓 */
+  .phone-screen {
+    position: absolute;
+    top: 52%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px; height: 180px;
+    border: 1px solid rgba(200, 220, 255, 0.06);
+    border-radius: 6px;
+    z-index: 3;
+    background: rgba(20, 25, 35, 0.3);
+  }
+  /* 通话计时器 */
+  .call-timer {
+    position: absolute;
+    top: 56%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(220, 180, 100, 0.35);
+    font-size: 22px;
+    font-family: "Courier New", monospace;
+    letter-spacing: 4px;
+    z-index: 4;
+  }
+  /* 呼叫者文字 */
+  .caller-id {
+    position: absolute;
+    top: 63%; left: 50%;
+    transform: translateX(-50%);
+    color: rgba(200, 220, 255, 0.2);
+    font-size: 10px;
+    letter-spacing: 6px;
+    z-index: 4;
+  }
+
+  /* 主标题 */
+  .title {
+    position: absolute;
+    top: 14%;
+    left: 0; right: 0;
+    text-align: center;
+    z-index: 10;
+  }
+  .title-main {
+    font-size: 56px;
+    font-weight: bold;
+    color: #d8d0c0;
+    letter-spacing: 12px;
+    text-shadow:
+      0 0 60px rgba(200, 170, 120, 0.25),
+      0 0 100px rgba(180, 150, 100, 0.1),
+      0 3px 6px rgba(0, 0, 0, 0.8);
+    display: block;
+  }
+  .title-sub {
+    display: block;
+    margin-top: 10px;
+    font-size: 15px;
+    color: rgba(200, 180, 140, 0.45);
+    letter-spacing: 10px;
+    font-family: "SimHei", "Noto Sans SC", sans-serif;
+  }
+
+  /* 分割线 */
+  .divider {
+    position: absolute;
+    top: 33%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(to right,
+      transparent,
+      rgba(180, 150, 100, 0.3),
+      rgba(200, 180, 140, 0.2),
+      rgba(180, 150, 100, 0.3),
+      transparent
+    );
+    z-index: 10;
+  }
+
+  /* 底部slogan */
+  .tagline {
+    position: absolute;
+    bottom: 16%;
+    left: 0; right: 0;
+    text-align: center;
+    z-index: 10;
+    color: rgba(200, 180, 150, 0.4);
+    font-size: 13px;
+    letter-spacing: 8px;
+    line-height: 2.2;
+  }
+
+  /* 作者 */
+  .author {
+    position: absolute;
+    bottom: 8%;
+    left: 0; right: 0;
+    text-align: center;
+    z-index: 10;
+    color: rgba(200, 180, 150, 0.3);
+    font-size: 12px;
+    letter-spacing: 10px;
+  }
+
+  /* 路面标线暗示 */
+  .road-line {
+    position: absolute;
+    bottom: 12%;
+    left: 15%; right: 15%;
+    height: 1px;
+    background: repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.06) 0px,
+      rgba(255, 255, 255, 0.06) 30px,
+      transparent 30px,
+      transparent 60px
+    );
+    z-index: 3;
+  }
+
+  /* 左上角小标题 */
+  .volume-mark {
+    position: absolute;
+    top: 7%; left: 8%;
+    color: rgba(200, 180, 140, 0.25);
+    font-size: 10px;
+    letter-spacing: 5px;
+    z-index: 10;
+  }
+
+  /* 微粒噪点 */
+  .noise {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 7;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+</style>
+</head>
+<body>
+<div class="cover">
+  <div class="city-glow"></div>
+  <div class="streetlight"></div>
+  <div class="warm-light"></div>
+
+  <!-- 规则裂隙系统 -->
+  <div class="crack-system">
+    <div class="crack-main"></div>
+    <div class="crack-secondary"></div>
+    <div class="crack-fine"></div>
+    <div class="crack-fine"></div>
+    <div class="crack-fine"></div>
+    <div class="crack-node"></div>
+  </div>
+
+  <div class="phone-screen"></div>
+  <div class="call-timer">00:47</div>
+  <div class="caller-id">呼 叫 者 — 沈 渡（7天后）</div>
+
+  <div class="road-line"></div>
+
+  <div class="title">
+    <span class="title-main">收容失控</span>
+    <span class="title-sub">我能看穿一切规则</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="tagline">
+    深夜网约车。乘客在后座消失。<br>
+    只剩一部还在通话中的手机——<br>
+    电话那头，是他自己的声音。
+  </div>
+
+  <div class="author">
+    [ damowang ]
+  </div>
+
+  <div class="volume-mark">惊 悚 游 戏 · 规 则 怪 谈 · 收 容 物</div>
+
+  <!-- 额外裂纹细节 -->
+  <div style="position:absolute;top:48%;left:30%;width:70px;height:1px;background:rgba(180,210,240,0.15);transform:rotate(-55deg);z-index:5;"></div>
+  <div style="position:absolute;top:50%;left:60%;width:55px;height:1px;background:rgba(180,210,240,0.12);transform:rotate(45deg);z-index:5;"></div>
+  <div style="position:absolute;top:36%;left:55%;width:40px;height:1px;background:rgba(180,210,240,0.18);transform:rotate(10deg);z-index:5;"></div>
+
+  <div class="noise"></div>
+</div>
+</body>
+</html>
