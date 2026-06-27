@@ -46,23 +46,19 @@ python init_novel.py 测试小说 --dry-run
 - `.claude/skills/` — 所有 Skill 定义
 - `.agents/skills/` — Agent Skill 定义
 
-**3b. 用户级配置（需要手动设置）**：
+**3b. 用户级配置**：
 
-将以下文件从旧电脑复制到新电脑的 `~/.claude/` 目录：
+规则文件已备份在仓库的 `user-rules/` 目录中。直接复制到 Claude Code 配置目录：
 
-```
-~/.claude/rules/
-  ├── agents.md          ← Agent 调度规则
-  ├── coding-style.md    ← 编码风格
-  ├── git-workflow.md    ← Git 工作流
-  ├── hooks.md           ← Hooks 系统
-  ├── patterns.md        ← 通用模式
-  ├── performance.md     ← 性能优化
-  ├── security.md        ← 安全规范
-  └── testing.md         ← 测试要求
+**Windows**:
+```powershell
+copy user-rules\*.md C:\Users\%USERNAME%\.claude\rules\
 ```
 
-> ⚠️ 这些是用户级全局规则，不在仓库中。如果旧电脑不可用，参考下方的规则模板重新创建。
+**Mac/Linux**:
+```bash
+cp user-rules/*.md ~/.claude/rules/
+```
 
 ### 4. 创建本地配置文件
 
@@ -110,45 +106,7 @@ python fix_quality.py                  # 质量
 
 ---
 
-## 四、用户级规则模板
-
-如果旧电脑不可用，在 `~/.claude/rules/` 下创建以下文件：
-
-### agents.md
-```markdown
-# Agent Orchestration
-## Immediate Agent Usage
-1. Complex feature requests - Use **planner** agent
-2. Code just written/modified - Use **code-reviewer** agent
-3. Bug fix or new feature - Use **tdd-guide** agent
-## Parallel Task Execution
-ALWAYS use parallel Task execution for independent operations.
-```
-
-### coding-style.md
-```markdown
-# Coding Style
-## Immutability (CRITICAL)
-ALWAYS create new objects, NEVER mutate.
-## File Organization
-MANY SMALL FILES > FEW LARGE FILES: 200-400 lines typical, 800 max.
-## Error Handling
-ALWAYS handle errors comprehensively with try/catch.
-## Input Validation
-ALWAYS validate user input (use zod for TypeScript).
-```
-
-### git-workflow.md
-```markdown
-# Git Workflow
-## Commit Message Format
-<type>: <description>
-Types: feat, fix, refactor, docs, test, chore, perf, ci
-```
-
----
-
-## 五、目录结构确认
+## 四、目录结构确认
 
 部署完成后，确认以下结构存在：
 
@@ -185,7 +143,7 @@ writer/
 
 ---
 
-## 六、常见问题
+## 五、常见问题
 
 **Q: Python 脚本报编码错误？**
 ```bash
